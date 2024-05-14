@@ -29,102 +29,102 @@ const quiz = {
   questions: [
     {
       id: "1",
-      content: "What is the capital of Japan?",
+      content: "What is the chemical symbol for water?",
       answers: [
-        { content: "Beijing", score: 0 },
-        { content: "Bangkok", score: 0 },
-        { content: "Seoul", score: 0 },
-        { content: "Tokyo", score: 1 },
+        { content: "H2O", score: 1 },
+        { content: "O2", score: 0 },
+        { content: "CO2", score: 0 },
+        { content: "HO2", score: 0 },
       ],
     },
     {
       id: "2",
-      content: "Who painted the Mona Lisa?",
+      content: "Who was the first President of the United States?",
       answers: [
-        { content: "Vincent van Gogh", score: 0 },
-        { content: "Leonardo da Vinci", score: 1 },
-        { content: "Michelangelo", score: 0 },
-        { content: "Pablo Picasso", score: 0 },
+        { content: "Thomas Jefferson", score: 0 },
+        { content: "George Washington", score: 1 },
+        { content: "Abraham Lincoln", score: 0 },
+        { content: "John Adams", score: 0 },
       ],
     },
     {
       id: "3",
-      content: "In which country did the tango dance originate?",
+      content: "Which planet is known as the Red Planet?",
       answers: [
-        { content: "Argentina", score: 1 },
-        { content: "Spain", score: 0 },
-        { content: "Italy", score: 0 },
-        { content: "Brazil", score: 0 },
+        { content: "Mars", score: 1 },
+        { content: "Jupiter", score: 0 },
+        { content: "Saturn", score: 0 },
+        { content: "Venus", score: 0 },
       ],
     },
     {
       id: "4",
-      content: "What is the main language spoken in Brazil?",
+      content: "What is the longest river in the world?",
       answers: [
-        { content: "Italian", score: 0 },
-        { content: "Portuguese", score: 1 },
-        { content: "Spanish", score: 0 },
-        { content: "French", score: 0 },
+        { content: "Nile", score: 1 },
+        { content: "Amazon", score: 0 },
+        { content: "Yangtze", score: 0 },
+        { content: "Mississippi", score: 0 },
       ],
     },
     {
       id: "5",
-      content: "Who wrote 'Romeo and Juliet'?",
+      content: "Who developed the theory of relativity?",
       answers: [
-        { content: "William Shakespeare", score: 1 },
-        { content: "Charles Dickens", score: 0 },
-        { content: "Jane Austen", score: 0 },
-        { content: "F. Scott Fitzgerald", score: 0 },
+        { content: "Albert Einstein", score: 1 },
+        { content: "Isaac Newton", score: 0 },
+        { content: "Galileo Galilei", score: 0 },
+        { content: "Nikola Tesla", score: 0 },
       ],
     },
     {
       id: "6",
-      content: "Which country is famous for its flamenco dance?",
+      content: "What is the largest ocean on Earth?",
       answers: [
-        { content: "Portugal", score: 0 },
-        { content: "Mexico", score: 0 },
-        { content: "Spain", score: 1 },
-        { content: "Cuba", score: 0 },
+        { content: "Atlantic Ocean", score: 0 },
+        { content: "Indian Ocean", score: 0 },
+        { content: "Arctic Ocean", score: 0 },
+        { content: "Pacific Ocean", score: 1 },
       ],
     },
     {
       id: "7",
-      content: "What is the most widely spoken language in the world?",
+      content: "Which element has the atomic number 1?",
       answers: [
-        { content: "Hindi", score: 0 },
-        { content: "Mandarin Chinese", score: 1 },
-        { content: "English", score: 0 },
-        { content: "Spanish", score: 0 },
+        { content: "Oxygen", score: 0 },
+        { content: "Hydrogen", score: 1 },
+        { content: "Helium", score: 0 },
+        { content: "Lithium", score: 0 },
       ],
     },
     {
       id: "8",
-      content: "Who composed the famous piece 'Für Elise'?",
+      content: "Who was the first man to step on the moon?",
       answers: [
-        { content: "Wolfgang Amadeus Mozart", score: 0 },
-        { content: "Franz Schubert", score: 0 },
-        { content: "Johann Sebastian Bach", score: 0 },
-        { content: "Ludwig van Beethoven", score: 1 },
+        { content: "Buzz Aldrin", score: 0 },
+        { content: "Neil Armstrong", score: 1 },
+        { content: "Yuri Gagarin", score: 0 },
+        { content: "Michael Collins", score: 0 },
       ],
     },
     {
       id: "9",
-      content: "What is the traditional attire of Scotland called for men?",
+      content: "What is the smallest country in the world?",
       answers: [
-        { content: "Kimono", score: 0 },
-        { content: "Toga", score: 0 },
-        { content: "Sari", score: 0 },
-        { content: "Kilt", score: 1 },
+        { content: "Monaco", score: 0 },
+        { content: "Vatican City", score: 1 },
+        { content: "San Marino", score: 0 },
+        { content: "Liechtenstein", score: 0 },
       ],
     },
     {
       id: "10",
-      content: "Which city is famous for its Carnival celebration?",
+      content: "In which year did the Titanic sink?",
       answers: [
-        { content: "Venice", score: 0 },
-        { content: "New Orleans", score: 0 },
-        { content: "Sydney", score: 0 },
-        { content: "Rio de Janeiro", score: 1 },
+        { content: "1912", score: 1 },
+        { content: "1905", score: 0 },
+        { content: "1915", score: 0 },
+        { content: "1920", score: 0 },
       ],
     },
   ],
@@ -151,7 +151,13 @@ io.on("connection", (socket) => {
     socket.join(quiz.id);
     socket.emit("quizJoined", { quizId: quiz.id, currentQuestion, timeLeft });
     // Add the user to the users array
-    users.push({ username, socketId: socket.id, quizId: quiz.id, score: 0, answerIndex: undefined });
+    users.push({
+      username,
+      socketId: socket.id,
+      quizId: quiz.id,
+      score: 0,
+      answerIndex: undefined,
+    });
     console.log(`${username} joined quiz ${quiz.id}`);
   });
 
@@ -212,19 +218,24 @@ io.on("connection", (socket) => {
         );
 
         // Emit score update to the user
-        io.to(quiz.id).emit("timeUp", correctAnswerIndex); 
+        io.to(quiz.id).emit("timeUp", correctAnswerIndex);
 
         // Check if the user answered correctly
         users.forEach((user) => {
           if (user.answerIndex === null || user.answerIndex === undefined) {
             console.log(`${user.username} answered ${user.answerIndex}: Wrong`);
           } else {
-            const answer = currentQuestion.answers[user.answerIndex].score === 1;
+            const answer =
+              currentQuestion.answers[user.answerIndex].score === 1;
             if (answer) {
-              console.log(`${user.username} answered ${user.answerIndex}: Right`);
-              user.score += 1; 
+              console.log(
+                `${user.username} answered ${user.answerIndex}: Right`
+              );
+              user.score += 1;
             } else {
-              console.log(`${user.username} answered ${user.answerIndex}: Wrong`);
+              console.log(
+                `${user.username} answered ${user.answerIndex}: Wrong`
+              );
             }
           }
         });

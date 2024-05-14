@@ -90,7 +90,7 @@ export const JoinRoom: React.FC = () => {
 
     // get current question
     socket.on("newQuestion", (data) => {
-      console.log("New question:", data);
+      // console.log("New question:", data);
       setCurrentQuestion(data.currentQuestion);
       setTimeLeft(data.timeLeft);
       setTimeUp({
