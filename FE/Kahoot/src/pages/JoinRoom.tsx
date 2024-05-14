@@ -61,7 +61,7 @@ export const JoinRoom: React.FC = () => {
 
   const fetchQuizzes = async () => {
     try {
-      const response = await fetch(`${serverUrl.local}quizzes`);
+      const response = await fetch(`${serverUrl.deploy}quizzes`);
       const data = await response.json();
       setQuizzes([data]);
     } catch (error) {
