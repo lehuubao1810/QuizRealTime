@@ -297,7 +297,7 @@ export const JoinRoom: React.FC = () => {
                 <li
                   className={`cursor-pointer rounded p-2 mt-2 transition-colors duration-200 hover:bg-blue-400
                   ${bgQuestion(index)} 
-                  ${timeUp.isTimeUp && "disabled:opacity-75"}
+                  ${timeUp.isTimeUp && "pointer-events-none opacity-60"}
                   
                   `}
                   key={index}
