@@ -28,7 +28,7 @@ type Quiz = {
 //   deploy: "https://quizrealtime.onrender.com/"
 // }
 
-const socket = io("https://quizrealtime.onrender.com/"); // Connect to the backend server
+const socket = io("http://localhost:5000/"); // Connect to the backend server
 
 export const JoinRoom: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -61,7 +61,7 @@ export const JoinRoom: React.FC = () => {
 
   const fetchQuizzes = async () => {
     try {
-      const response = await fetch(`https://quizrealtime.onrender.com/quizzes`);
+      const response = await fetch(`http://localhost:5000/quizzes`);
       const data = await response.json();
       setQuizzes([data]);
     } catch (error) {
