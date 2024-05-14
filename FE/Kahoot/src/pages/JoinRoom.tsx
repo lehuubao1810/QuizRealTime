@@ -277,13 +277,13 @@ export const JoinRoom: React.FC = () => {
           >
             {timeLeft}
           </div>
-          <div className="flex justify-between items-center mb-4">
-            <div
+          <div className="flex justify-center items-center mb-4">
+            {/* <div
               className="cursor-pointer text-blue-500"
               onClick={() => window.history.back()}
             >
               Back
-            </div>
+            </div> */}
             <h2 className="text-xl font-bold">Quiz: {selectedQuiz?.title}</h2>
             {/* <div className="flex items-center">
               <p className="text-lg font-bold mr-2 text-blue-500">{score}</p>
