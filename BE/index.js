@@ -24,7 +24,7 @@ app.use(cors());
 // Dummy data for quizzes (replace with database)
 const quiz = {
   id: "1",
-  title: "quiz1",
+  title: "Quiz",
   timePerQuest: 10,
   questions: [
     {
@@ -128,6 +128,7 @@ const quiz = {
       ],
     },
   ],
+  isPublished: false,
 };
 
 let users = [];
@@ -140,6 +141,14 @@ io.on("connection", (socket) => {
   console.log("New client connected");
   console.log("socket.id connected: ", socket.id);
 
+  // Handle creating a quiz
+  socket.on("publish", () => {
+    quiz.isPublished = true;
+    socket.join(quiz.id);
+    console.log("Quiz published");
+    socket.emit("quizPublished", quiz);
+  });
+
   // Handle joining a quiz
   socket.on("joinQuiz", (username) => {
     if (!quiz) {
@@ -148,8 +157,6 @@ io.on("connection", (socket) => {
     }
 
     // Add the user to the quiz
-    socket.join(quiz.id);
-    socket.emit("quizJoined", { quizId: quiz.id, currentQuestion, timeLeft });
     // Add the user to the users array
     users.push({
       username,
@@ -158,8 +165,20 @@ io.on("connection", (socket) => {
       score: 0,
       answerIndex: undefined,
     });
+    socket.join(quiz.id);
+
+    console.log('users: ', users); 
+    getUsersJoined(users);
+    
     console.log(`${username} joined quiz ${quiz.id}`);
   });
+
+  const getUsersJoined = (users) => {
+    if (users.length === 0) {
+      return;
+    }
+    io.to(quiz.id).emit("usersJoined", users);
+  };
 
   // Handle receiving an answer from a user
   socket.on("answer", (answerIndexClient) => {
@@ -268,20 +287,29 @@ io.on("connection", (socket) => {
   // Handle disconnect
   socket.on("disconnect", () => {
     console.log("Client disconnected");
-    users = users.filter((user) => user.username !== socket.id);
+    users = users.filter((user) => user.socketId !== socket.id);
   });
 });
 
 // Routes
-app.post("/createQuiz", (req, res) => {
-  const quiz = req.body;
-  quiz.id = Date.now().toString(); // Generate a unique ID
-  quizzes.push(quiz);
-  res.status(201).json({ id: quiz.id });
+app.post("/updateQues", (req, res) => {
+  const { ques } = req.body;
+  quiz.questions = ques;
+  res.json(quiz.questions);
 });
 
-app.get("/quizzes", (req, res) => {
+app.get("/getQuiz", (req, res) => {
   res.json(quiz);
+});
+
+// Reset all the data
+app.get("/reset", (req, res) => {
+  users = [];
+  currentQuestionIndex = -1;
+  currentQuestion = quiz.questions[currentQuestionIndex];
+  timeLeft = quiz.timePerQuest;
+  quiz.isPublished = false;
+  res.json({ message: "Data reset" });
 });
 
 // Start the server

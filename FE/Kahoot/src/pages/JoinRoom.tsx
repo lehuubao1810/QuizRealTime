@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-// import { toast } from "react-toastify";
-import io from "socket.io-client";
+import { toast } from "react-toastify";
+import { socket } from "../constants/socket";
 
 type Answer = {
   content: string;
@@ -21,14 +21,10 @@ type Quiz = {
   title: string;
   timePerQuest: number;
   question: Question[];
+  isPublished: boolean;
 };
 
-// const serverUrl = {
-//   local: "http://localhost:5000/",
-//   deploy: "https://quizrealtime.onrender.com/"
-// }
-
-const socket = io("https://quizrealtime.onrender.com/"); // Connect to the backend server
+// Connect to the backend server
 
 export const JoinRoom: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -50,18 +46,18 @@ export const JoinRoom: React.FC = () => {
 
   const navigate = useNavigate();
 
-  // const notify = (message: string, type: string) => {
-  //   if (type === "error") {
-  //     toast.error(message);
-  //   }
-  //   if (type === "success") {
-  //     toast.success(message);
-  //   }
-  // };
+  const notify = (message: string, type: string) => {
+    if (type === "error") {
+      toast.error(message);
+    }
+    if (type === "success") {
+      toast.success(message);
+    }
+  };
 
   const fetchQuizzes = async () => {
     try {
-      const response = await fetch(`https://quizrealtime.onrender.com/quizzes`);
+      const response = await fetch(`http://localhost:5000/getQuiz`);
       const data = await response.json();
       setQuizzes([data]);
     } catch (error) {
@@ -76,6 +72,12 @@ export const JoinRoom: React.FC = () => {
 
   useEffect(() => {
     console.log("Setting up event listeners...");
+
+    // get current users in the room
+    socket.on("usersJoined", (data) => {
+      console.log("usersJoined", data);
+      // setUsers(data.users);
+    });
 
     // Nghe sự kiện "scoreUpdated" từ máy chủ
     // socket.on("scoreUpdate", (newScore) => {
@@ -135,6 +137,10 @@ export const JoinRoom: React.FC = () => {
   }, []);
 
   const handleJoinQuiz = (quizId: string) => {
+    if (username.trim() === "") {
+      notify("Nhập tên cho đàng hoàng vào :33", "error");
+      return;
+    }
     // Join the selected quiz
     console.log("quiz id", quizId);
     socket.emit("joinQuiz", username);
@@ -183,11 +189,6 @@ export const JoinRoom: React.FC = () => {
     },
     [answerIndex, timeUp]
   );
-
-  const handleStartQuiz = () => {
-    socket.emit("start");
-    console.log("start quiz");
-  };
 
   const handleSubmitAnswer = async (
     answerIndex: number,
@@ -246,21 +247,31 @@ export const JoinRoom: React.FC = () => {
                   {quiz.title}
                 </p>
 
-                {!isJoin ? (
-                  <button
-                    type="button"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => handleJoinQuiz(quiz.id)}
-                  >
-                    Join
-                  </button>
+                {quiz.isPublished ? (
+                  isJoin ? (
+                    <button
+                      type="button"
+                      className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded"
+                      onClick={() => {}}
+                    >
+                      Waiting for the quiz to start ...
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      onClick={() => handleJoinQuiz(quiz.id)}
+                    >
+                      Join
+                    </button>
+                  )
                 ) : (
                   <button
                     type="button"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => handleStartQuiz()}
+                    className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={() => {}}
                   >
-                    Start
+                    Waiting for the teacher ...
                   </button>
                 )}
               </li>
