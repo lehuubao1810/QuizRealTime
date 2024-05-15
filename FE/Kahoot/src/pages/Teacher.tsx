@@ -53,7 +53,7 @@ export const Teacher: React.FC = () => {
 
   const fetchQuizzes = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/getQuiz`);
+      const response = await fetch(`https://quizrealtime.onrender.com/getQuiz`);
       const data = await response.json();
       setQuizzes([data]);
     } catch (error) {
